@@ -7,7 +7,8 @@ Una aplicación Angular para gestión de tareas con autenticación JWT.
 - ✅ **Login seguro** con JWT y soporte para cookies
 - 📝 **Gestión completa de tareas** (crear, editar, marcar como completada, eliminar)
 - 👤 **Perfil de usuario** con edición de datos y cambio de contraseña
-- 🔒 **Guards de autenticación** para proteger rutas
+- � **Estadísticas detalladas** (personales para usuarios, globales para admins)
+- �🔒 **Guards de autenticación** para proteger rutas
 - 🔄 **Interceptor HTTP** para manejo automático de tokens
 - 👑 **Funciones de administrador** (gestión de usuarios)
 - 🎨 **Interfaz responsive** y moderna
@@ -20,7 +21,8 @@ src/app/
 ├── components/
 │   ├── login/           # Componente de autenticación
 │   ├── todo/            # Componente de gestión de tareas
-│   └── profile/         # Componente de perfil de usuario
+│   ├── profile/         # Componente de perfil de usuario
+│   └── task-stats/      # Componente de estadísticas
 ├── models/              # Interfaces TypeScript
 │   ├── user.model.ts    # Modelos de usuario
 │   └── task.model.ts    # Modelos de tareas
@@ -86,6 +88,7 @@ Los componentes incluyen métodos placeholder para funcionalidades adicionales q
 
 **En TodoComponent:**
 - `navigateToProfile()` - ✅ **YA IMPLEMENTADO** - Va al perfil del usuario
+- `navigateToStats()` - ✅ **YA IMPLEMENTADO** - Va a las estadísticas
 - `navigateToSettings()` - Para ir a configuraciones (pendiente de implementar)
 
 ## Instalación y Ejecución
@@ -125,10 +128,17 @@ Los componentes incluyen métodos placeholder para funcionalidades adicionales q
 - **Eliminar:** Clic en "🗑️ Eliminar" (con confirmación)
 
 ### Gestión de Perfil
-- **Ver perfil:** Clic en "Perfil" desde el dashboard
+- **Ver perfil:** Clic en "👤 Perfil" desde el dashboard
 - **Editar datos:** Email y nombre completo
 - **Cambiar contraseña:** Con validación de contraseña actual
 - **Ver información:** Tipo de usuario, estado, fechas
+
+### Estadísticas
+- **Ver estadísticas:** Clic en "📊 Estadísticas" desde el dashboard
+- **Estadísticas personales:** Para usuarios regulares
+- **Estadísticas globales:** Para administradores
+- **Visualización:** Cards, barra de progreso y resumen textual
+- **Actualización:** Botón para refrescar los datos
 
 ### Funciones de Administrador
 Si eres administrador, tendrás acceso a funciones adicionales a través del AuthService:

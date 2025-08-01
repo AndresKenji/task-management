@@ -45,7 +45,8 @@ export class TodoComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.taskService.getUserTasks().subscribe({
+    // Usar el método optimizado que maneja automáticamente admin vs usuario
+    this.taskService.getTasksForCurrentUser().subscribe({
       next: (tasks) => {
         this.tasks = tasks;
         this.loading = false;
@@ -56,9 +57,7 @@ export class TodoComponent implements OnInit {
         console.error('Error loading tasks:', err);
       }
     });
-  }
-
-  logout(): void {
+  }  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
@@ -152,6 +151,10 @@ export class TodoComponent implements OnInit {
   // Métodos de navegación - ahora conectados con las rutas reales
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
+  }
+
+  navigateToStats(): void {
+    this.router.navigate(['/stats']);
   }
 
   navigateToSettings(): void {
