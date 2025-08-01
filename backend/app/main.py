@@ -3,9 +3,27 @@ import time
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware import Middleware
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
+from auth.router import router as auth_router
+from task.router import router as task_router
+from database.database import get_database,Base
+from auth.dependencies import AdminUserService
+
 load_dotenv()
+
+middleware:list[Middleware] = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    ),
+]
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -14,10 +32,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-from auth.router import router as auth_router
-from task.router import router as task_router
-from database.database import get_database,Base
-from auth.dependencies import AdminUserService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -90,7 +104,8 @@ app = FastAPI(
     title="Task Management API",
     description="API para gestión de tareas con autenticación",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    middleware=middleware
 )
 
 app.include_router(auth_router)

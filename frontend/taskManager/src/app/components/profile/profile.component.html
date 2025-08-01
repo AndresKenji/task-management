@@ -1,0 +1,188 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>Mi Perfil</h2>
+    <button class="btn btn-secondary" (click)="goBack()">
+      ← Volver a Tareas
+    </button>
+  </div>
+
+  <!-- Mensajes -->
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="success-message" *ngIf="success">
+    {{ success }}
+  </div>
+
+  <!-- Información del usuario -->
+  <div class="profile-card" *ngIf="currentUser">
+    <div class="user-info">
+      <h3>Información Personal</h3>
+
+      <div class="info-row">
+        <label>Usuario:</label>
+        <span>{{ currentUser.username }}</span>
+      </div>
+
+      <div class="info-row">
+        <label>Email:</label>
+        <span *ngIf="!editMode">{{ currentUser.email }}</span>
+        <input
+          *ngIf="editMode"
+          type="email"
+          [(ngModel)]="profileData.email"
+          class="form-control"
+          placeholder="Email"
+        >
+      </div>
+
+      <div class="info-row">
+        <label>Nombre Completo:</label>
+        <span *ngIf="!editMode">{{ currentUser.full_name }}</span>
+        <input
+          *ngIf="editMode"
+          type="text"
+          [(ngModel)]="profileData.full_name"
+          class="form-control"
+          placeholder="Nombre completo"
+        >
+      </div>
+
+      <div class="info-row">
+        <label>Tipo de Usuario:</label>
+        <span class="user-type" [class.admin]="currentUser.is_admin">
+          {{ currentUser.is_admin ? '👑 Administrador' : '👤 Usuario' }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <label>Estado:</label>
+        <span class="status" [class.disabled]="currentUser.disabled">
+          {{ currentUser.disabled ? '❌ Deshabilitado' : '✅ Activo' }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <label>Fecha de Registro:</label>
+        <span>{{ currentUser.creation_date | date:'longDate' }}</span>
+      </div>
+
+      <div class="info-row" *ngIf="currentUser.last_login">
+        <label>Último Acceso:</label>
+        <span>{{ currentUser.last_login | date:'short' }}</span>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <button
+        *ngIf="!editMode"
+        class="btn btn-primary"
+        (click)="toggleEditMode()"
+      >
+        ✏️ Editar Perfil
+      </button>
+
+      <div *ngIf="editMode" class="edit-buttons">
+        <button
+          class="btn btn-success"
+          (click)="updateProfile()"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading">Guardando...</span>
+          <span *ngIf="!loading">💾 Guardar</span>
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          (click)="toggleEditMode()"
+          [disabled]="loading"
+        >
+          ❌ Cancelar
+        </button>
+      </div>
+
+      <button
+        class="btn btn-warning"
+        (click)="toggleChangePassword()"
+        *ngIf="!showChangePassword"
+      >
+        🔒 Cambiar Contraseña
+      </button>
+    </div>
+  </div>
+
+  <!-- Sección de cambio de contraseña -->
+  <div class="password-card" *ngIf="showChangePassword">
+    <h3>Cambiar Contraseña</h3>
+
+    <form (ngSubmit)="changePassword()">
+      <div class="form-group">
+        <label for="currentPassword">Contraseña Actual:</label>
+        <input
+          type="password"
+          id="currentPassword"
+          [(ngModel)]="passwordData.current_password"
+          name="currentPassword"
+          required
+          class="form-control"
+          placeholder="Ingresa tu contraseña actual"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">Nueva Contraseña:</label>
+        <input
+          type="password"
+          id="newPassword"
+          [(ngModel)]="passwordData.new_password"
+          name="newPassword"
+          required
+          class="form-control"
+          placeholder="Ingresa tu nueva contraseña"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Nueva Contraseña:</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          [(ngModel)]="passwordData.confirm_password"
+          name="confirmPassword"
+          required
+          class="form-control"
+          placeholder="Confirma tu nueva contraseña"
+        >
+      </div>
+
+      <div class="password-buttons">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading">Cambiando...</span>
+          <span *ngIf="!loading">🔐 Cambiar Contraseña</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="toggleChangePassword()"
+          [disabled]="loading"
+        >
+          ❌ Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Acciones adicionales -->
+  <div class="additional-actions">
+    <button class="btn btn-danger" (click)="logout()">
+      🚪 Cerrar Sesión
+    </button>
+  </div>
+</div>

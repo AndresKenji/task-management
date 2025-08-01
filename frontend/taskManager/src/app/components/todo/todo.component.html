@@ -1,0 +1,193 @@
+<div class="task-container">
+  <!-- Header con información del usuario -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Gestión de Tareas</h1>
+      <span class="welcome-text" *ngIf="currentUser">
+        Bienvenido, {{ currentUser.full_name || currentUser.username }}
+      </span>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline" (click)="navigateToProfile()">
+        Perfil
+      </button>
+      <button class="btn btn-outline" (click)="navigateToSettings()">
+        Configuración
+      </button>
+      <button class="btn btn-danger" (click)="logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </header>
+
+  <!-- Mensaje de error -->
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Botón para crear nueva tarea -->
+  <div class="actions-bar">
+    <button class="btn btn-primary" (click)="openNewTaskModal()">
+      ➕ Nueva Tarea
+    </button>
+  </div>
+
+  <!-- Indicador de carga -->
+  <div class="loading" *ngIf="loading">
+    Cargando tareas...
+  </div>
+
+  <!-- Lista de tareas -->
+  <div class="tasks-grid" *ngIf="!loading">
+    <div class="task-card" *ngFor="let task of tasks" [class.completed]="task.done">
+      <div class="task-header">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <span class="task-status" [class.done]="task.done">
+          {{ task.done ? '✅ Completada' : '⏳ Pendiente' }}
+        </span>
+      </div>
+
+      <p class="task-description">{{ task.description }}</p>
+
+      <div class="task-dates">
+        <small>Creada: {{ task.created_at | date:'short' }}</small>
+        <small *ngIf="task.updated_at !== task.created_at">
+          Actualizada: {{ task.updated_at | date:'short' }}
+        </small>
+      </div>
+
+      <div class="task-actions">
+        <button
+          class="btn btn-small btn-success"
+          (click)="toggleTaskCompletion(task)"
+          [title]="task.done ? 'Marcar como pendiente' : 'Marcar como completada'"
+        >
+          {{ task.done ? '↩️ Descompletar' : '✅ Completar' }}
+        </button>
+
+        <button
+          class="btn btn-small btn-warning"
+          (click)="openEditTaskModal(task)"
+          title="Editar tarea"
+        >
+          ✏️ Editar
+        </button>
+
+        <button
+          class="btn btn-small btn-danger"
+          (click)="deleteTask(task)"
+          title="Eliminar tarea"
+        >
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay tareas -->
+    <div class="no-tasks" *ngIf="tasks.length === 0">
+      <h3>No tienes tareas creadas</h3>
+      <p>Haz clic en "Nueva Tarea" para comenzar</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para crear nueva tarea -->
+<div class="modal" *ngIf="showNewTaskModal" (click)="closeNewTaskModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Nueva Tarea</h3>
+      <button class="close-btn" (click)="closeNewTaskModal()">×</button>
+    </div>
+
+    <form (ngSubmit)="createTask()">
+      <div class="form-group">
+        <label for="newTaskTitle">Título:</label>
+        <input
+          type="text"
+          id="newTaskTitle"
+          [(ngModel)]="newTask.title"
+          name="newTaskTitle"
+          required
+          class="form-control"
+          placeholder="Ingresa el título de la tarea"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="newTaskDescription">Descripción:</label>
+        <textarea
+          id="newTaskDescription"
+          [(ngModel)]="newTask.description"
+          name="newTaskDescription"
+          class="form-control"
+          rows="4"
+          placeholder="Describe la tarea (opcional)"
+        ></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeNewTaskModal()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="!newTask.title.trim()">
+          Crear Tarea
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para editar tarea -->
+<div class="modal" *ngIf="showEditTaskModal" (click)="closeEditTaskModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Editar Tarea</h3>
+      <button class="close-btn" (click)="closeEditTaskModal()">×</button>
+    </div>
+
+    <form (ngSubmit)="updateTask()">
+      <div class="form-group">
+        <label for="editTaskTitle">Título:</label>
+        <input
+          type="text"
+          id="editTaskTitle"
+          [(ngModel)]="editTaskData.title"
+          name="editTaskTitle"
+          required
+          class="form-control"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="editTaskDescription">Descripción:</label>
+        <textarea
+          id="editTaskDescription"
+          [(ngModel)]="editTaskData.description"
+          name="editTaskDescription"
+          class="form-control"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="editTaskData.done"
+            name="editTaskDone"
+          >
+          Tarea completada
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeEditTaskModal()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Actualizar Tarea
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

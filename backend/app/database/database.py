@@ -2,9 +2,11 @@ import logging
 import os
 from typing import Any, Optional, Dict, Generator
 from abc import ABC, abstractmethod
+
+from sqlalchemy import create_engine, Engine, text
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from sqlalchemy.pool import NullPool, QueuePool
-from sqlalchemy import create_engine, Engine, text
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 
@@ -14,9 +16,7 @@ logger = logging.getLogger(__name__)
 Base: Any = declarative_base()
 
 class DatabaseConfig:
-    """Configuración para diferentes tipos de base de datos"""
 
-    # Configuraciones por defecto para cada tipo de DB
     DEFAULT_CONFIGS = {
         'sqlite': {
             'poolclass': NullPool,
@@ -49,7 +49,6 @@ class DatabaseConfig:
 
 
 class DatabaseFactory:
-    """Factory para crear conexiones de diferentes tipos de base de datos"""
 
     @staticmethod
     def create_connection_string(db_type: str, **kwargs) -> str:
@@ -89,7 +88,6 @@ class DatabaseFactory:
             raise ValueError(f"Tipo de base de datos no soportado: {db_type}")
 
 class AbstractDatabase(ABC):
-    """Clase abstracta para manejo de base de datos"""
 
     @abstractmethod
     def get_db(self) -> Generator[Session, None, None]:
@@ -143,14 +141,12 @@ class Database(AbstractDatabase):
         self.db_type = db_type.lower()
         self.connection_string = connection_string
 
-        # Obtener configuración específica del tipo de DB
         config = DatabaseConfig.DEFAULT_CONFIGS.get(self.db_type, {}).copy()
 
-        # Permitir override de configuración
+        # Override de configuración
         engine_config = kwargs.get('engine_config', {})
         config.update(engine_config)
 
-        # Filtrar parámetros válidos para create_engine
         valid_engine_params = {
             'echo', 'echo_pool', 'poolclass', 'pool_size', 'max_overflow',
             'pool_pre_ping', 'pool_recycle', 'pool_timeout', 'connect_args',
@@ -164,7 +160,6 @@ class Database(AbstractDatabase):
             **filtered_config
         )
 
-        # Crear sessionmaker
         self.SessionLocal = sessionmaker(
             autocommit=False,
             autoflush=False,
@@ -174,7 +169,7 @@ class Database(AbstractDatabase):
         logger.info(f"Database inicializada: {self.db_type}")
 
     def _detect_db_type(self, connection_string: str) -> str:
-        """Detecta el tipo de base de datos desde la cadena de conexión"""
+
         if connection_string.startswith('sqlite'):
             return 'sqlite'
         elif connection_string.startswith('postgresql'):
@@ -187,8 +182,8 @@ class Database(AbstractDatabase):
             return 'unknown'
 
     def get_db(self) -> Generator[Session, None, None]:
-        """Obtiene una sesión de base de datos"""
-        db = self.SessionLocal()
+
+        db: Session = self.SessionLocal()
         try:
             yield db
         except Exception as e:
@@ -199,25 +194,25 @@ class Database(AbstractDatabase):
             db.close()
 
     def get_engine(self) -> Engine:
-        """Obtiene el engine de SQLAlchemy"""
+
         return self.engine
 
-    def create_tables(self, base_model=None):
-        """Crea las tablas en la base de datos"""
+    def create_tables(self, base_model=None) -> None:
+
         if base_model is None:
             base_model = Base
         base_model.metadata.create_all(bind=self.engine)
         logger.info("Tablas creadas exitosamente")
 
-    def drop_tables(self, base_model=None):
-        """Elimina las tablas de la base de datos"""
+    def drop_tables(self, base_model=None) -> None:
+
         if base_model is None:
             base_model = Base
         base_model.metadata.drop_all(bind=self.engine)
         logger.info("Tablas eliminadas exitosamente")
 
     def test_connection(self) -> bool:
-        """Prueba la conexión a la base de datos"""
+
         try:
             with self.engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
@@ -228,14 +223,14 @@ class Database(AbstractDatabase):
             return False
 
     def close(self) -> None:
-        """Cierra el engine de la base de datos"""
+
         if hasattr(self, 'engine'):
             self.engine.dispose()
             logger.info("Conexiones de base de datos cerradas")
 
     @property
-    def conn(self):
-        """Propiedad para compatibilidad con código existente"""
+    def conn(self) -> Connection:
+
         return self.engine.connect()
 
 # Instancia global de la base de datos patron singleton
