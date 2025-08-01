@@ -1,15 +1,17 @@
-from typing import Any, Optional, Dict, Generator
+import logging
 import os
+from typing import Any, Optional, Dict, Generator
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from sqlalchemy.pool import NullPool, QueuePool
 from sqlalchemy import create_engine, Engine, text
 from dotenv import load_dotenv
-import logging
+from urllib.parse import quote_plus
 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+Base: Any = declarative_base()
 
 class DatabaseConfig:
     """Configuración para diferentes tipos de base de datos"""
@@ -45,6 +47,7 @@ class DatabaseConfig:
         }
     }
 
+
 class DatabaseFactory:
     """Factory para crear conexiones de diferentes tipos de base de datos"""
 
@@ -60,24 +63,25 @@ class DatabaseFactory:
             host = kwargs.get('host', 'localhost')
             port = kwargs.get('port', 5432)
             database = kwargs.get('database', 'taskdb')
-            username = kwargs.get('username', 'postgres')
-            password = kwargs.get('password', '')
+            username = quote_plus(str(kwargs.get('username', 'postgres')))
+            password = quote_plus(str(kwargs.get('password', '')))
+
             return f"postgresql://{username}:{password}@{host}:{port}/{database}"
 
         elif db_type.lower() == 'mysql':
             host = kwargs.get('host', 'localhost')
             port = kwargs.get('port', 3306)
             database = kwargs.get('database', 'taskdb')
-            username = kwargs.get('username', 'root')
-            password = kwargs.get('password', '')
+            username = quote_plus(str(kwargs.get('username', 'root')))
+            password = quote_plus(str(kwargs.get('password', '')))
             return f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 
         elif db_type.lower() == 'mssql':
             host = kwargs.get('host', 'localhost')
             port = kwargs.get('port', 1433)
             database = kwargs.get('database', 'taskdb')
-            username = kwargs.get('username', 'sa')
-            password = kwargs.get('password', '')
+            username = quote_plus(str(kwargs.get('username', 'sa')))
+            password = quote_plus(str(kwargs.get('password', '')))
             driver = kwargs.get('driver', 'ODBC Driver 17 for SQL Server')
             return f"mssql+pyodbc://{username}:{password}@{host}:{port}/{database}?driver={driver}"
 
@@ -250,5 +254,3 @@ def initialize_database(db_type: str, **kwargs) -> Database:
     database_instance = Database(db_type=db_type, **kwargs)
     return database_instance
 
-# Base declarativa para los modelos
-Base: Any = declarative_base()

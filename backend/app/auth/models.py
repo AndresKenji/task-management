@@ -1,5 +1,6 @@
 from enum import unique
 from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime
+from sqlalchemy.orm import relationship
 from database.database import Base
 
 
@@ -15,3 +16,6 @@ class User(Base):
     creation_date = Column(Date, nullable=False)
     disable_date = Column(Date, nullable=True)
     last_login = Column(DateTime, nullable=True)
+
+    # Relación con Task
+    tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")

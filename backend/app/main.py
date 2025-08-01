@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -14,21 +15,39 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 from auth.router import router as auth_router
-from database.database import get_database
+from task.router import router as task_router
+from database.database import get_database,Base
 from auth.dependencies import AdminUserService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Maneja el ciclo de vida de la aplicación"""
-    # Startup
     logger.info("Iniciando aplicación...")
 
     try:
+        time.sleep(2)
+
         db = get_database()
         logger.info(f"Base de datos inicializada: {db.db_type}")
+        logger.info(f"String de conexión: {db.connection_string}")
 
-        if not db.test_connection():
-            raise RuntimeError("No se pudo conectar a la base de datos")
+        # Intentar conectar con reintentos
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                if db.test_connection():
+                    logger.info("Conexión a base de datos exitosa")
+                    break
+                else:
+                    logger.warning(f"Intento {attempt + 1}/{max_retries} falló")
+                    if attempt < max_retries - 1:
+                        time.sleep(2)
+            except Exception as e:
+                logger.error(f"Error en intento {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(2)
+        else:
+            raise RuntimeError("No se pudo conectar a la base de datos después de múltiples intentos")
 
         db.create_tables()
         logger.info("Tablas de base de datos creadas/verificadas")
@@ -59,6 +78,14 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Error durante el cierre: {e}")
 
+    logger.info("Cerrando aplicación...")
+    try:
+        db = get_database()
+        db.close()
+        logger.info("Conexiones de base de datos cerradas")
+    except Exception as e:
+        logger.error(f"Error durante el cierre: {e}")
+
 app = FastAPI(
     title="Task Management API",
     description="API para gestión de tareas con autenticación",
@@ -67,6 +94,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(task_router)
 
 @app.get("/health")
 async def health_check():
@@ -102,6 +130,6 @@ if __name__ == "__main__":
         app="main:app",
         host="0.0.0.0",
         port=8000,
-        reload=True,
+        reload=False,
         log_level="info"
     )
