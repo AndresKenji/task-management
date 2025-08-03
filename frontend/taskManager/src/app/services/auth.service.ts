@@ -131,7 +131,6 @@ export class AuthService {
     });
   }
 
-  // Métodos para administradores (si el usuario actual es admin)
 
   // Listar todos los usuarios (solo admin)
   getAllUsers(skip: number = 0, limit: number = 100): Observable<User[]> {
@@ -140,7 +139,7 @@ export class AuthService {
     });
   }
 
-  // Crear nuevo usuario (solo admin)
+  // Crear un usuario
   createUser(userData: {
     username: string;
     email: string;

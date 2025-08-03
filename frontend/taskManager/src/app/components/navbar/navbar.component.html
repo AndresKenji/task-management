@@ -1,0 +1,23 @@
+  <!-- Header con información del usuario -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Gestión de Tareas</h1>
+      <span class="welcome-text" *ngIf="currentUser">
+        Bienvenido, {{ currentUser.full_name || currentUser.username }}
+      </span>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline" (click)="navigateToStats()">
+        <i-feather name="activity"></i-feather> Estadísticas
+      </button>
+      <button class="btn btn-outline" (click)="navigateToProfile()">
+        <i-feather name="user"></i-feather> Perfil
+      </button>
+      <button class="btn btn-outline" (click)="navigateToSettings()">
+        <i-feather name="settings"></i-feather> Configuración
+      </button>
+      <button class="btn btn-danger" (click)="logout()">
+        <i-feather name="log-out"></i-feather> Cerrar Sesión
+      </button>
+    </div>
+  </header>

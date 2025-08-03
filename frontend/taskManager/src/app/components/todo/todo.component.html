@@ -1,27 +1,5 @@
-<div class="task-container">
-  <!-- Header con información del usuario -->
-  <header class="header">
-    <div class="header-left">
-      <h1>Gestión de Tareas</h1>
-      <span class="welcome-text" *ngIf="currentUser">
-        Bienvenido, {{ currentUser.full_name || currentUser.username }}
-      </span>
-    </div>
-    <div class="header-right">
-      <button class="btn btn-outline" (click)="navigateToStats()">
-        📊 Estadísticas
-      </button>
-      <button class="btn btn-outline" (click)="navigateToProfile()">
-        👤 Perfil
-      </button>
-      <button class="btn btn-outline" (click)="navigateToSettings()">
-        ⚙️ Configuración
-      </button>
-      <button class="btn btn-danger" (click)="logout()">
-        🚪 Cerrar Sesión
-      </button>
-    </div>
-  </header>
+<app-navbar [currentUser]="currentUser"></app-navbar>
+<div class="task-container glass-background">
 
   <!-- Mensaje de error -->
   <div class="error-message" *ngIf="error">
@@ -31,7 +9,7 @@
   <!-- Botón para crear nueva tarea -->
   <div class="actions-bar">
     <button class="btn btn-primary" (click)="openNewTaskModal()">
-      ➕ Nueva Tarea
+      <i-feather name="plus"></i-feather> Nueva Tarea
     </button>
   </div>
 
@@ -46,7 +24,7 @@
       <div class="task-header">
         <h3 class="task-title">{{ task.title }}</h3>
         <span class="task-status" [class.done]="task.done">
-          {{ task.done ? '✅ Completada' : '⏳ Pendiente' }}
+          {{ task.done ? 'Completada' : 'Pendiente' }}
         </span>
       </div>
 
@@ -65,7 +43,8 @@
           (click)="toggleTaskCompletion(task)"
           [title]="task.done ? 'Marcar como pendiente' : 'Marcar como completada'"
         >
-          {{ task.done ? '↩️ Descompletar' : '✅ Completar' }}
+          <i-feather [name]="task.done ? 'x-square' : 'check-square'"></i-feather>
+          {{ task.done ? 'Descompletar' : 'Completar' }}
         </button>
 
         <button
@@ -73,7 +52,7 @@
           (click)="openEditTaskModal(task)"
           title="Editar tarea"
         >
-          ✏️ Editar
+          <i-feather name="edit-3"></i-feather> Editar
         </button>
 
         <button
@@ -81,7 +60,7 @@
           (click)="deleteTask(task)"
           title="Eliminar tarea"
         >
-          🗑️ Eliminar
+          <i-feather name="trash-2"></i-feather> Eliminar
         </button>
       </div>
     </div>

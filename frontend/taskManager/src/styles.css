@@ -1,19 +1,228 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-  --sky-blue: #8ecae6ff;
-  --blue-green: #219ebcff;
-  --prussian-blue: #023047ff;
+  /*
+  --midnight-green: #219ebcff;
   --selective-yellow: #ffb703ff;
   --ut-orange: #fb8500ff;
   --text-color: #333;
   --error-color: #ff4d4d;
+  */
+
+  --rich-black: #001219ff;
+  --prussian-blue: #023047ff;
+  --midnight-green: #005f73ff;
+  --dark-cyan: #0a9396ff;
+  --tiffany-blue: #94d2bdff;
+  --vanilla: #e9d8a6ff;
+  --gamboge: #ee9b00ff;
+  --alloy-orange: #ca6702ff;
+  --rust: #bb3e03ff;
+  --error-color: #ae2012ff;
+  --auburn: #9b2226ff;
+  --pearl: #f0efebff;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(var(--sky-blue), var(--blue-green), var(--prussian-blue));
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(var(--dark-cyan), var(--prussian-blue));
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  padding-right: 5%;
+  padding-left: 5%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1140px;
+  }
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  flex: 0 0 100px;
+  margin-bottom: 0.5rem;
+  color: var(--pearl);
+  font-weight: 400;
+}
+
+.form-control {
+  flex: 1;
+  display: block;
+  padding: 0.75rem;
+  border: 1px solid var(--pearl);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--dark-cyan);
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 150px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+
+
+.btn-success {
+  background-color: var(--dark-cyan);
+  color: var(--pearl);
+}
+
+.btn-warning {
+  background-color: var(--gamboge);
+  color: var(--rich-black);
+}
+
+.btn-danger {
+  background-color: var(--error-color );
+  color: var(--pearl);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--pearl);
+  border: 1px solid var(--pearl);
+}
+
+.btn-outline:hover {
+  background-color: var(--pearl);
+  color: var(--rich-black);
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--midnight-green);
+  color: var(--pearl);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--prussian-blue) ;
+}
+
+.btn-secondary {
+  background-color: var(--prussian-blue);
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--dark-cyan);
+}
+
+.btn:disabled {
+  background-color: var(--prussian-blue);
+  color: var(--midnight-green);
+  cursor: not-allowed;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+/* Mensajes */
+.error-message {
+  background-color: var(--vanilla);
+  color: var(--error-color);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--pearl );
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: var(--gamboge);
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-center {
+  justify-content: center !important;
+}
+
+.justify-between {
+  justify-content: space-between !important;
+}
+
+.align-center {
+  align-items: center !important;
+}
+
+.glass-background {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+.link {
+  display: block;
+  margin: 3%;
+  text-decoration: none;
+  color: var(--vanilla)
+}

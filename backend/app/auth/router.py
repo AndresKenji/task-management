@@ -248,13 +248,13 @@ async def list_users(
 @router.post("/users", response_model=UserShow, summary="Crear usuario")
 async def create_user(
     user_data: CreateUser,
-    current_user: Annotated[User, Depends(security.get_current_active_user)],
+    #current_user: Annotated[User, Depends(security.get_current_active_user)],
     db: Session = Depends(get_db),
 ):
     try:
 
-        if current_user:
-            security.require_admin(current_user)
+        # if current_user:
+        #     security.require_admin(current_user)
 
         with next(db) as session:
             existing_username = session.query(db_user).filter(
@@ -289,8 +289,8 @@ async def create_user(
             session.commit()
             session.refresh(new_user)
 
-            creator = current_user.username if current_user else "public"
-            logger.info(f"New user created: {user_data.username} by {creator}")
+            #creator = current_user.username if current_user else "public"
+            logger.info(f"New user created: {user_data.username}")
 
             return UserShow.model_validate(new_user)
 

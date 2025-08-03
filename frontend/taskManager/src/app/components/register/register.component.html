@@ -1,1 +1,30 @@
-<p>register works!</p>
+<section class="container d-flex justify-center align-center" style="height: 100vh;">
+    <div class="register-card glass-background">
+        <h3 class="center">Registrate</h3>
+        <form [formGroup]="newUserForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" class="form-control" formControlName="username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" formControlName="email">
+            </div>
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" class="form-control"  formControlName="full_name">
+            </div>
+            <div class="form-group">
+                <label for="plain_password">Password</label>
+                <input type="password" id="plain_password" class="form-control" formControlName="plain_password">
+            </div>
+            <div class="center">
+                <button type="submit" class="btn btn-primary" [disabled]="!newUserForm.valid" >Register</button>
+            </div>
+            <div *ngIf="error" class="error-message">{{ error }}</div>
+        </form>
+        <div class="center">
+            <a routerLink="/login" class="link">¿Ya tienes cuenta?  Inicia sesión</a>
+        </div>
+    </div>
+</section>

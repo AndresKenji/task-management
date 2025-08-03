@@ -1,0 +1,25 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--prussian-blue) 0%, var(--midnight-green) 100%);
+  color: white;
+  border-radius: 8px;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.welcome-text {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.header-right {
+  display: flex;
+  gap: 0.5rem;
+}

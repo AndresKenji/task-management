@@ -1,5 +1,5 @@
 <div class="login-container">
-  <div class="login-card">
+  <div class="login-card glass-background">
     <h2>Iniciar Sesión</h2>
 
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
@@ -33,19 +33,22 @@
         {{ error }}
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="loading || !loginForm.form.valid"
-      >
-        <span *ngIf="loading">Iniciando sesión...</span>
-        <span *ngIf="!loading">Iniciar Sesión</span>
-      </button>
+      <div class="center">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loading || !loginForm.form.valid"
+        >
+          <span *ngIf="loading">Iniciando sesión...</span>
+          <span *ngIf="!loading">Iniciar Sesión <i-feather name="log-in" class="login-icon"></i-feather> </span>
+        </button>
+      </div>
+
     </form>
 
     <div class="login-links">
-      <a href="#" (click)="navigateToRegister()" class="link">¿No tienes cuenta? Regístrate</a>
-      <a href="#" (click)="forgotPassword()" class="link">¿Olvidaste tu contraseña?</a>
+      <a routerLink="/register" class="link">¿No tienes cuenta? Regístrate</a>
+      <a (click)="forgotPassword()" class="link">¿Olvidaste tu contraseña?</a>
     </div>
   </div>
 </div>

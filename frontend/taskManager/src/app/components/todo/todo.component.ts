@@ -57,9 +57,6 @@ export class TodoComponent implements OnInit {
         console.error('Error loading tasks:', err);
       }
     });
-  }  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   // Métodos para gestionar tareas
@@ -148,17 +145,5 @@ export class TodoComponent implements OnInit {
     }
   }
 
-  // Métodos de navegación - ahora conectados con las rutas reales
-  navigateToProfile(): void {
-    this.router.navigate(['/profile']);
-  }
 
-  navigateToStats(): void {
-    this.router.navigate(['/stats']);
-  }
-
-  navigateToSettings(): void {
-    // Aquí navegarías a configuraciones - puedes crear un componente similar
-    console.log('Navegar a configuraciones - crear componente de configuraciones');
-  }
 }

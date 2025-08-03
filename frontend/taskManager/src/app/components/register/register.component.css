@@ -1,0 +1,12 @@
+.register-card {
+    min-width: 500px;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.register-card h3 {
+    color: whitesmoke;
+    margin-bottom: 1.5rem;
+}

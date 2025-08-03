@@ -43,14 +43,7 @@ export class LoginComponent {
     });
   }
 
-  // Método para simular diferentes acciones - estos son los links que puedes cambiar
-  navigateToRegister(): void {
-    // Aquí irías a la página de registro
-    console.log('Navegar a registro - cambiar por tu lógica');
-  }
-
   forgotPassword(): void {
-    // Aquí irías a la página de recuperación de contraseña
     console.log('Recuperar contraseña - cambiar por tu lógica');
   }
 }
