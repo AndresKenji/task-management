@@ -17,17 +17,30 @@
 .tasks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+  gap: 0.5rem;
 }
-
+@media (max-width: 768px) {
+  .tasks-grid {
+    grid-template-columns: 1fr;
+    gap: 5rem;
+    column-gap: normal;
+  }
+  .task-card {
+    min-width: 0;
+    padding: 1rem;
+  }
+}
 /* Cards de tareas */
 .task-card {
-  background: white;
+  background: var(--pearl);
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .task-card:hover {
@@ -74,7 +87,8 @@
 }
 
 .task-dates {
-  margin-bottom: 1rem;
+  margin-top: auto;
+  margin-bottom: 10px;
   color: #888;
   font-size: 0.85rem;
 }
@@ -88,6 +102,8 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-top: auto;
 }
 
 /* No tasks message */

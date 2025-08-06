@@ -44,7 +44,6 @@
           [title]="task.done ? 'Marcar como pendiente' : 'Marcar como completada'"
         >
           <i-feather [name]="task.done ? 'x-square' : 'check-square'"></i-feather>
-          {{ task.done ? 'Descompletar' : 'Completar' }}
         </button>
 
         <button
@@ -52,7 +51,7 @@
           (click)="openEditTaskModal(task)"
           title="Editar tarea"
         >
-          <i-feather name="edit-3"></i-feather> Editar
+          <i-feather name="edit-3"></i-feather>
         </button>
 
         <button
@@ -60,7 +59,7 @@
           (click)="deleteTask(task)"
           title="Eliminar tarea"
         >
-          <i-feather name="trash-2"></i-feather> Eliminar
+          <i-feather name="trash-2"></i-feather>
         </button>
       </div>
     </div>

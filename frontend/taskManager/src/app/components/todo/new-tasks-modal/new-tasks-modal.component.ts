@@ -7,9 +7,9 @@ import { TaskCreate } from 'src/app/models/task.model';
   styleUrls: ['./new-tasks-modal.component.css']
 })
 export class NewTaskModalComponent {
-  @Input() show = false; // Controla si el modal está visible
-  @Output() close = new EventEmitter<void>(); // Evento para cerrar el modal
-  @Output() create = new EventEmitter<TaskCreate>(); // Evento para crear una tarea
+  @Input() show = false;
+  @Output() close = new EventEmitter<void>();
+  @Output() create = new EventEmitter<TaskCreate>();
 
   newTask: TaskCreate = { title: '', description: '' };
 

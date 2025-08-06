@@ -11,8 +11,7 @@ from passlib.context import CryptContext
 
 from auth import models, schemas
 from auth.exceptions import LoginRedirectException
-from database.database import get_database
-from database.database import Database
+from database.database import Database, get_database
 
 logger = logging.getLogger(__name__)
 

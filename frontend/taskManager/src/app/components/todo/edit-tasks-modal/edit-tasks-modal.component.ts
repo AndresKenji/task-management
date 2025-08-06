@@ -7,24 +7,24 @@ import { Task, TaskUpdate } from 'src/app/models/task.model';
   styleUrls: ['./edit-tasks-modal.component.css']
 })
 export class EditTaskModalComponent implements OnChanges {
-  @Input() show = false; // Controla si el modal está visible
-  @Input() task: Task | null = null; // Recibe la tarea a editar
-  @Output() close = new EventEmitter<void>(); // Evento para cerrar el modal
-  @Output() update = new EventEmitter<TaskUpdate>(); // Evento para actualizar la tarea
+  @Input() show = false;
+  @Input() task: Task | null = null;
+  @Output() close = new EventEmitter<void>();
+  @Output() update = new EventEmitter<TaskUpdate>();
 
   editTaskData: TaskUpdate = {};
 
   ngOnChanges(): void {
     if (this.task) {
-      this.editTaskData = { ...this.task }; // Inicializar datos de edición
+      this.editTaskData = { ...this.task };
     }
   }
 
   closeModal(): void {
-    this.close.emit(); // Emitir evento para cerrar el modal
+    this.close.emit();
   }
 
   updateTask(): void {
-    this.update.emit(this.editTaskData); // Emitir evento con los datos actualizados
+    this.update.emit(this.editTaskData);
   }
 }

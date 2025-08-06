@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
 import { Task, TaskCreate, TaskUpdate } from '../../models/task.model';
@@ -31,7 +30,6 @@ export class TodoComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private authService: AuthService,
-    private router: Router
   ) {}
 
   ngOnInit(): void {

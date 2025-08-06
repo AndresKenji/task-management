@@ -9,27 +9,24 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from auth.schemas import Token, User, UserShow, CreateUser, UserUpdate, ChangePasswordRequest
 from auth.models import User as db_user
-from database.database import get_database
+from database.database import get_database, Database
 from auth import security
 
 logger = logging.getLogger(__name__)
 
+database: Database = get_database()
 
 router = APIRouter(
     prefix="/api/auth",
     tags=["Authentication"]
 )
 
-def get_db():
-    """Dependency para obtener sesión de base de datos"""
-    database = get_database()
-    return database.get_db()
 
 @router.post("/token", response_model=Token, summary="Obtener token de acceso")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ) -> Token:
     try:
         client_ip = request.headers.get("X-Forwarded-For", request.client.host if request.client else "unknown")
@@ -53,11 +50,10 @@ async def login_for_access_token(
             )
 
         # Actualizar último login
-        with next(db) as session:
-            db_user_obj = session.query(db_user).filter(db_user.id == user.id).first()
-            if db_user_obj:
-                db_user_obj.last_login = datetime.now()
-                session.commit()
+        db_user_obj = db.query(db_user).filter(db_user.id == user.id).first()
+        if db_user_obj:
+            db_user_obj.last_login = datetime.now()
+            db.commit()
 
         access_token_expires: timedelta = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = security.create_access_token(
@@ -82,7 +78,7 @@ async def login_for_access_token_cookie(
     response: Response,
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ):
 
     try:
@@ -98,11 +94,10 @@ async def login_for_access_token_cookie(
             )
 
         # Actualizar último login
-        with next(db) as session:
-            db_user_obj = session.query(db_user).filter(db_user.id == user.id).first()
-            if db_user_obj:
-                db_user_obj.last_login = datetime.now()
-                session.commit()
+        db_user_obj = db.query(db_user).filter(db_user.id == user.id).first()
+        if db_user_obj:
+            db_user_obj.last_login = datetime.now()
+            db.commit()
 
         access_token_expires: timedelta = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token: str = security.create_access_token(
@@ -139,39 +134,38 @@ async def read_users_me(
 async def update_user_profile(
     user_update: UserUpdate,
     current_user: Annotated[User, Depends(security.get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ) -> UserShow:
     try:
-        with next(db) as session:
-            db_user_obj = session.query(db_user).filter(db_user.id == current_user.id).first()
+        db_user_obj = db.query(db_user).filter(db_user.id == current_user.id).first()
 
-            if not db_user_obj:
+        if not db_user_obj:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        if user_update.email and user_update.email != db_user_obj.email:
+            existing_email = db.query(db_user).filter(
+                db_user.email == user_update.email,
+                db_user.id != current_user.id
+            ).first()
+            if existing_email:
                 raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email already registered"
                 )
 
-            if user_update.email and user_update.email != db_user_obj.email:
-                existing_email = session.query(db_user).filter(
-                    db_user.email == user_update.email,
-                    db_user.id != current_user.id
-                ).first()
-                if existing_email:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Email already registered"
-                    )
+        if user_update.email:
+            db_user_obj.email = user_update.email
+        if user_update.full_name:
+            db_user_obj.full_name = user_update.full_name
 
-            if user_update.email:
-                db_user_obj.email = user_update.email
-            if user_update.full_name:
-                db_user_obj.full_name = user_update.full_name
+        db.commit()
+        db.refresh(db_user_obj)
 
-            session.commit()
-            session.refresh(db_user_obj)
-
-            logger.info(f"User {current_user.username} updated their profile")
-            return UserShow.model_validate(db_user_obj)
+        logger.info(f"User {current_user.username} updated their profile")
+        return UserShow.model_validate(db_user_obj)
 
     except HTTPException:
         raise
@@ -186,7 +180,7 @@ async def update_user_profile(
 async def change_password(
     password_data: ChangePasswordRequest,
     current_user: Annotated[User, Depends(security.get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ):
     try:
         if not security.verify_password(password_data.current_password, current_user.hashed_password):
@@ -201,20 +195,19 @@ async def change_password(
                 detail="New password must be different from current password"
             )
 
-        with next(db) as session:
-            db_user_obj = session.query(db_user).filter(db_user.id == current_user.id).first()
+        db_user_obj = db.query(db_user).filter(db_user.id == current_user.id).first()
 
-            if not db_user_obj:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
-                )
+        if not db_user_obj:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
 
-            db_user_obj.hashed_password = security.get_password_hash(password_data.new_password)
-            session.commit()
+        db_user_obj.hashed_password = security.get_password_hash(password_data.new_password)
+        db.commit()
 
-            logger.info(f"User {current_user.username} changed their password")
-            return {"status": "success", "message": "Password changed successfully"}
+        logger.info(f"User {current_user.username} changed their password")
+        return {"status": "success", "message": "Password changed successfully"}
 
     except HTTPException:
         raise
@@ -228,15 +221,14 @@ async def change_password(
 @router.get("/users", response_model=List[UserShow], summary="Listar usuarios (Admin)")
 async def list_users(
     current_user: Annotated[User, Depends(security.get_current_admin_user)],
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     skip: int = 0,
     limit: int = 100
 ) -> List[UserShow]:
     try:
-        with next(db) as session:
-            users = session.query(db_user).offset(skip).limit(limit).all()
-            logger.info(f"Admin {current_user.username} listed users")
-            return [UserShow.model_validate(user) for user in users]
+        users = db.query(db_user).offset(skip).limit(limit).all()
+        logger.info(f"Admin {current_user.username} listed users")
+        return [UserShow.model_validate(user) for user in users]
 
     except Exception as e:
         logger.error(f"Error listing users: {e}")
@@ -249,50 +241,49 @@ async def list_users(
 async def create_user(
     user_data: CreateUser,
     #current_user: Annotated[User, Depends(security.get_current_active_user)],
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
 ):
     try:
 
         # if current_user:
         #     security.require_admin(current_user)
 
-        with next(db) as session:
-            existing_username = session.query(db_user).filter(
-                db_user.username == user_data.username
-            ).first()
-            if existing_username:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Username already registered"
-                )
-
-            existing_email = session.query(db_user).filter(
-                db_user.email == user_data.email
-            ).first()
-            if existing_email:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Email already registered"
-                )
-
-            new_user = db_user(
-                username=user_data.username,
-                full_name=user_data.full_name,
-                email=user_data.email,
-                hashed_password=security.get_password_hash(user_data.plain_password),
-                creation_date=datetime.now().date(),
-                disabled=False,
-                is_admin=False
+        existing_username = db.query(db_user).filter(
+            db_user.username == user_data.username
+        ).first()
+        if existing_username:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already registered"
             )
 
-            session.add(new_user)
-            session.commit()
-            session.refresh(new_user)
+        existing_email = db.query(db_user).filter(
+            db_user.email == user_data.email
+        ).first()
+        if existing_email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
 
-            #creator = current_user.username if current_user else "public"
-            logger.info(f"New user created: {user_data.username}")
+        new_user = db_user(
+            username=user_data.username,
+            full_name=user_data.full_name,
+            email=user_data.email,
+            hashed_password=security.get_password_hash(user_data.plain_password),
+            creation_date=datetime.now().date(),
+            disabled=False,
+            is_admin=False
+        )
 
-            return UserShow.model_validate(new_user)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        #creator = current_user.username if current_user else "public"
+        logger.info(f"New user created: {user_data.username}")
+
+        return UserShow.model_validate(new_user)
 
     except HTTPException:
         raise
@@ -307,37 +298,36 @@ async def create_user(
 async def toggle_user_status(
     user_id: int,
     current_user: Annotated[User, Depends(security.get_current_admin_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ):
     try:
-        with next(db) as session:
-            user = session.query(db_user).filter(db_user.id == user_id).first()
+        user = db.query(db_user).filter(db_user.id == user_id).first()
 
-            if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
-                )
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
 
-            if user.id == current_user.id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Cannot disable your own account"
-                )
+        if user.id == current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot disable your own account"
+            )
 
-            user.disabled = not user.disabled
-            user.disable_date = datetime.now().date() if user.disabled else None
+        user.disabled = not user.disabled
+        user.disable_date = datetime.now().date() if user.disabled else None
 
-            session.commit()
+        db.commit()
 
-            action = "disabled" if user.disabled else "enabled"
-            logger.info(f"Admin {current_user.username} {action} user {user.username}")
+        action = "disabled" if user.disabled else "enabled"
+        logger.info(f"Admin {current_user.username} {action} user {user.username}")
 
-            return {
-                "status": "success",
-                "message": f"User {action} successfully",
-                "user": UserShow.model_validate(user)
-            }
+        return {
+            "status": "success",
+            "message": f"User {action} successfully",
+            "user": UserShow.model_validate(user)
+        }
 
     except HTTPException:
         raise
@@ -352,35 +342,34 @@ async def toggle_user_status(
 async def toggle_admin_status(
     user_id: int,
     current_user: Annotated[User, Depends(security.get_current_admin_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ):
     try:
-        with next(db) as session:
-            user = session.query(db_user).filter(db_user.id == user_id).first()
+        user = db.query(db_user).filter(db_user.id == user_id).first()
 
-            if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
-                )
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
 
-            if user.id == current_user.id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Cannot modify your own admin status"
-                )
+        if user.id == current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot modify your own admin status"
+            )
 
-            user.is_admin = not user.is_admin
-            session.commit()
+        user.is_admin = not user.is_admin
+        db.commit()
 
-            action = "granted" if user.is_admin else "revoked"
-            logger.info(f"Admin {current_user.username} {action} admin privileges for user {user.username}")
+        action = "granted" if user.is_admin else "revoked"
+        logger.info(f"Admin {current_user.username} {action} admin privileges for user {user.username}")
 
-            return {
-                "status": "success",
-                "message": f"Admin privileges {action} successfully",
-                "user": UserShow.model_validate(user)
-            }
+        return {
+            "status": "success",
+            "message": f"Admin privileges {action} successfully",
+            "user": UserShow.model_validate(user)
+        }
 
     except HTTPException:
         raise
@@ -395,34 +384,33 @@ async def toggle_admin_status(
 async def delete_user(
     user_id: int,
     current_user: Annotated[User, Depends(security.get_current_admin_user)],
-    db: Session = Depends(get_db)
+    db: Session = Depends(database.get_db)
 ):
     try:
-        with next(db) as session:
-            user = session.query(db_user).filter(db_user.id == user_id).first()
+        user = db.query(db_user).filter(db_user.id == user_id).first()
 
-            if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
-                )
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
 
-            if user.id == current_user.id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Cannot delete your own account"
-                )
+        if user.id == current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete your own account"
+            )
 
-            username = user.username
-            session.delete(user)
-            session.commit()
+        username = user.username
+        db.delete(user)
+        db.commit()
 
-            logger.info(f"Admin {current_user.username} deleted user {username}")
+        logger.info(f"Admin {current_user.username} deleted user {username}")
 
-            return {
-                "status": "success",
-                "message": f"User {username} deleted successfully"
-            }
+        return {
+            "status": "success",
+            "message": f"User {username} deleted successfully"
+        }
 
     except HTTPException:
         raise
