@@ -1,0 +1,49 @@
+<div class="modal" *ngIf="show" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Editar Tarea</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+
+    <form (ngSubmit)="updateTask()">
+      <div class="form-group">
+        <label class="text-black" for="editTaskTitle">Título:</label>
+        <input
+          type="text"
+          id="editTaskTitle"
+          [(ngModel)]="editTaskData.title"
+          name="editTaskTitle"
+          required
+          class="form-control"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="text-black" for="editTaskDescription">Descripción:</label>
+        <textarea
+          id="editTaskDescription"
+          [(ngModel)]="editTaskData.description"
+          name="editTaskDescription"
+          class="form-control"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label text-black">
+          <input
+            type="checkbox"
+            [(ngModel)]="editTaskData.done"
+            name="editTaskDone"
+          >
+          Tarea completada
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Actualizar Tarea</button>
+      </div>
+    </form>
+  </div>
+</div>

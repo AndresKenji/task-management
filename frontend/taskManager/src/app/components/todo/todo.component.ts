@@ -61,61 +61,50 @@ export class TodoComponent implements OnInit {
 
   // Métodos para gestionar tareas
   openNewTaskModal(): void {
-    this.showNewTaskModal = true;
-    this.newTask = { title: '', description: '' };
-  }
+  this.showNewTaskModal = true;
+}
 
-  closeNewTaskModal(): void {
-    this.showNewTaskModal = false;
-  }
+closeNewTaskModal(): void {
+  this.showNewTaskModal = false;
+}
 
-  createTask(): void {
-    if (!this.newTask.title.trim()) {
-      return;
+createTask(newTask: TaskCreate): void {
+  this.taskService.createTask(newTask).subscribe({
+    next: () => {
+      this.loadTasks();
+      this.closeNewTaskModal();
+    },
+    error: (err) => {
+      this.error = 'Error al crear la tarea';
+      console.error('Error creating task:', err);
     }
+  });
+}
 
-    this.taskService.createTask(this.newTask).subscribe({
-      next: () => {
-        this.loadTasks();
-        this.closeNewTaskModal();
-      },
-      error: (err) => {
-        this.error = 'Error al crear la tarea';
-        console.error('Error creating task:', err);
-      }
-    });
-  }
+openEditTaskModal(task: Task): void {
+  this.editingTask = task;
+  this.showEditTaskModal = true;
+}
 
-  // Editar tarea
-  openEditTaskModal(task: Task): void {
-    this.editingTask = task;
-    this.editTaskData = {
-      title: task.title,
-      description: task.description,
-      done: task.done
-    };
-    this.showEditTaskModal = true;
-  }
+closeEditTaskModal(): void {
+  this.showEditTaskModal = false;
+  this.editingTask = null;
+}
 
-  closeEditTaskModal(): void {
-    this.showEditTaskModal = false;
-    this.editingTask = null;
-  }
+updateTask(updatedTask: TaskUpdate): void {
+  if (!this.editingTask) return;
 
-  updateTask(): void {
-    if (!this.editingTask) return;
-
-    this.taskService.updateTask(this.editingTask.id, this.editTaskData).subscribe({
-      next: () => {
-        this.loadTasks();
-        this.closeEditTaskModal();
-      },
-      error: (err) => {
-        this.error = 'Error al actualizar la tarea';
-        console.error('Error updating task:', err);
-      }
-    });
-  }
+  this.taskService.updateTask(this.editingTask.id, updatedTask).subscribe({
+    next: () => {
+      this.loadTasks();
+      this.closeEditTaskModal();
+    },
+    error: (err) => {
+      this.error = 'Error al actualizar la tarea';
+      console.error('Error updating task:', err);
+    }
+  });
+}
 
   // Marcar como completada/no completada
   toggleTaskCompletion(task: Task): void {

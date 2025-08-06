@@ -73,7 +73,7 @@
     <!-- Barra de progreso visual -->
     <div class="progress-section">
       <h4>Progreso de Completación</h4>
-      <div class="progress-bar">
+      <div class="progress-bar" *ngIf="stats">
         <div
           class="progress-fill"
           [style.width.%]="stats.completion_rate"
@@ -82,7 +82,7 @@
           [class.low]="stats.completion_rate < 50"
         ></div>
       </div>
-      <div class="progress-labels">
+      <div class="progress-labels" *ngIf="stats">
         <span>0%</span>
         <span>{{ stats.completion_rate | number:'1.1-1' }}%</span>
         <span>100%</span>
@@ -90,7 +90,7 @@
     </div>
 
     <!-- Resumen textual -->
-    <div class="stats-summary">
+    <div class="stats-summary" *ngIf="stats">
       <div class="summary-card">
         <h4>📝 Resumen</h4>
         <p *ngIf="stats.total_tasks === 0">

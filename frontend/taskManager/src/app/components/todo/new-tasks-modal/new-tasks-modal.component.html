@@ -1,0 +1,41 @@
+<!-- Modal para crear nueva tarea -->
+<div class="modal" *ngIf="show" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Nueva Tarea</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+
+    <form (ngSubmit)="createTask()">
+      <div class="form-group text-black">
+        <label class="text-black" for="newTaskTitle">Título:</label>
+        <input
+          type="text"
+          id="newTaskTitle"
+          [(ngModel)]="newTask.title"
+          name="newTaskTitle"
+          required
+          class="form-control"
+          placeholder="Ingresa el título de la tarea"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="text-black" for="newTaskDescription">Descripción:</label>
+        <textarea
+          id="newTaskDescription"
+          [(ngModel)]="newTask.description"
+          name="newTaskDescription"
+          class="form-control"
+          rows="4"
+          placeholder="Describe la tarea (opcional)"
+        ></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!newTask.title.trim()">Crear Tarea</button>
+      </div>
+    </form>
+  </div>
+</div>

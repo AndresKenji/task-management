@@ -73,8 +73,21 @@
   </div>
 </div>
 
+<app-new-task-modal
+  [show]="showNewTaskModal"
+  (close)="closeNewTaskModal()"
+  (create)="createTask($event)"
+></app-new-task-modal>
+
+<app-edit-task-modal
+  [show]="showEditTaskModal"
+  [task]="editingTask"
+  (close)="closeEditTaskModal()"
+  (update)="updateTask($event)"
+></app-edit-task-modal>
+
 <!-- Modal para crear nueva tarea -->
-<div class="modal" *ngIf="showNewTaskModal" (click)="closeNewTaskModal()">
+<!-- <div class="modal" *ngIf="showNewTaskModal" (click)="closeNewTaskModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3>Nueva Tarea</h3>
@@ -117,10 +130,10 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->
 
 <!-- Modal para editar tarea -->
-<div class="modal" *ngIf="showEditTaskModal" (click)="closeEditTaskModal()">
+<!-- <div class="modal" *ngIf="showEditTaskModal" (click)="closeEditTaskModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3>Editar Tarea</h3>
@@ -172,4 +185,4 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->

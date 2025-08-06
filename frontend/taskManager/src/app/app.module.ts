@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -13,6 +14,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { RegisterComponent } from './components/register/register.component';
 import { IconsModule } from './icons/icons.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { NewTaskModalComponent } from './components/todo/new-tasks-modal/new-tasks-modal.component';
+import { EditTaskModalComponent } from './components/todo/edit-tasks-modal/edit-tasks-modal.component';
 
 
 @NgModule({
@@ -23,10 +26,13 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     ProfileComponent,
     TaskStatsComponent,
     RegisterComponent,
-    NavbarComponent
+    NavbarComponent,
+    NewTaskModalComponent,
+    EditTaskModalComponent
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
