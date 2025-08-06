@@ -16,7 +16,6 @@ import { IconsModule } from './icons/icons.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NewTaskModalComponent } from './components/todo/new-tasks-modal/new-tasks-modal.component';
 import { EditTaskModalComponent } from './components/todo/edit-tasks-modal/edit-tasks-modal.component';
-import { TaskCardComponent } from './components/todo/task-card/task-card.component';
 
 
 @NgModule({
@@ -30,7 +29,6 @@ import { TaskCardComponent } from './components/todo/task-card/task-card.compone
     NavbarComponent,
     NewTaskModalComponent,
     EditTaskModalComponent,
-    TaskCardComponent
   ],
   imports: [
     BrowserModule,

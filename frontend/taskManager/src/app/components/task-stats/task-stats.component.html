@@ -1,9 +1,11 @@
 <div class="stats-container">
   <div class="stats-header">
-    <h2>📊 Estadísticas de Tareas</h2>
+    <h2>
+      <i-feather name="bar-chart"></i-feather> Estadísticas de Tareas
+    </h2>
     <div class="header-actions">
       <button class="btn btn-secondary" (click)="refreshStats()">
-        🔄 Actualizar
+        <i-feather name="refresh-cw"></i-feather> Actualizar
       </button>
       <button class="btn btn-outline" (click)="goBack()">
         ← Volver a Tareas
@@ -26,8 +28,12 @@
     <!-- Tipo de estadísticas -->
     <div class="stats-scope">
       <div class="scope-badge" [class.global]="stats.scope === 'global'" [class.personal]="stats.scope === 'personal'">
-        <span *ngIf="stats.scope === 'global'">🌍 Estadísticas Globales (Administrador)</span>
-        <span *ngIf="stats.scope === 'personal'">👤 Mis Estadísticas Personales</span>
+        <span *ngIf="stats.scope === 'global'">
+          <i-feather name="globe"></i-feather> Estadísticas Globales (Administrador)
+        </span>
+        <span *ngIf="stats.scope === 'personal'">
+          <i-feather name="user"></i-feather> Mis Estadísticas Personales
+        </span>
       </div>
     </div>
 
@@ -35,7 +41,7 @@
     <div class="stats-grid">
       <!-- Total de tareas -->
       <div class="stats-card total">
-        <div class="stats-icon">📋</div>
+        <div class="stats-icon"><i-feather name="list"></i-feather></div>
         <div class="stats-info">
           <h3>{{ stats.total_tasks }}</h3>
           <p>Tareas Totales</p>
@@ -44,7 +50,9 @@
 
       <!-- Tareas completadas -->
       <div class="stats-card completed">
-        <div class="stats-icon">✅</div>
+        <div class="stats-icon">
+          <i-feather name="check-square"></i-feather>
+        </div>
         <div class="stats-info">
           <h3>{{ stats.completed_tasks }}</h3>
           <p>Completadas</p>
@@ -62,7 +70,9 @@
 
       <!-- Porcentaje de completación -->
       <div class="stats-card completion">
-        <div class="stats-icon">📈</div>
+        <div class="stats-icon">
+          <i-feather name="trending-up"></i-feather>
+        </div>
         <div class="stats-info">
           <h3>{{ stats.completion_rate | number:'1.1-1' }}%</h3>
           <p>Completación</p>
@@ -92,7 +102,7 @@
     <!-- Resumen textual -->
     <div class="stats-summary" *ngIf="stats">
       <div class="summary-card">
-        <h4>📝 Resumen</h4>
+        <h4>Resumen</h4>
         <p *ngIf="stats.total_tasks === 0">
           <span *ngIf="stats.scope === 'personal'">No tienes tareas creadas aún.</span>
           <span *ngIf="stats.scope === 'global'">No hay tareas en el sistema aún.</span>
