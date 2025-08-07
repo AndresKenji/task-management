@@ -73,7 +73,6 @@ export class AuthService {
     localStorage.removeItem('access_token');
     this.currentUserSubject.next(null);
 
-    // Llamada al endpoint de logout del backend para limpiar cookies
     this.http.post(`${this.baseUrl}/logout`, {}, {
       withCredentials: true,
       headers: this.getAuthHeaders()
@@ -84,8 +83,10 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/users/me`);
-  }
+    return this.http.get<User>(`${this.baseUrl}/users/me`, {
+      headers: this.getAuthHeaders()
+  });
+}
 
   isAuthenticated(): boolean {
     return !!this.getToken();

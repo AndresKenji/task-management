@@ -61,7 +61,9 @@
 
       <!-- Tareas pendientes -->
       <div class="stats-card pending">
-        <div class="stats-icon">⏳</div>
+        <div class="stats-icon">
+          <i-feather name="clock"></i-feather>
+        </div>
         <div class="stats-info">
           <h3>{{ stats.pending_tasks }}</h3>
           <p>Pendientes</p>
@@ -122,13 +124,13 @@
           </p>
 
           <p *ngIf="stats.completion_rate >= 80" class="positive">
-            ¡Excelente progreso! 🎉
+            ¡Excelente progreso! <i-feather name="award"></i-feather>
           </p>
           <p *ngIf="stats.completion_rate >= 50 && stats.completion_rate < 80" class="neutral">
-            Buen avance, ¡sigue así! 💪
+            Buen avance, ¡sigue así! <i-feather name="smile"></i-feather>
           </p>
           <p *ngIf="stats.completion_rate < 50 && stats.total_tasks > 0" class="encouraging">
-            Hay varias tareas pendientes, ¡puedes hacerlo! 🚀
+            Hay varias tareas pendientes, ¡puedes hacerlo!
           </p>
         </div>
       </div>
