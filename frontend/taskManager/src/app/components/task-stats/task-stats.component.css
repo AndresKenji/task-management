@@ -26,7 +26,6 @@
   gap: 0.5rem;
 }
 
-/* Mensajes */
 .error-message {
   background-color: #f8d7da;
   color: #721c24;
@@ -43,7 +42,6 @@
   color: #666;
 }
 
-/* Botones */
 .btn {
   padding: 0.5rem 1rem;
   border: none;
@@ -71,7 +69,6 @@
   color: #333;
 }
 
-/* Alcance de estadísticas */
 .stats-scope {
   margin-bottom: 2rem;
   text-align: center;
@@ -95,7 +92,6 @@
   color: white;
 }
 
-/* Grid de estadísticas */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -153,7 +149,6 @@
   font-weight: 500;
 }
 
-/* Barra de progreso */
 .progress-section {
   background: white;
   padding: 2rem;
@@ -205,7 +200,6 @@
   color: #666;
 }
 
-/* Resumen */
 .stats-summary {
   margin-bottom: 2rem;
 }
@@ -244,7 +238,6 @@
   font-weight: 600;
 }
 
-/* Información del usuario */
 .user-info {
   text-align: center;
   padding: 1rem;
@@ -253,7 +246,6 @@
   color: #666;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .stats-container {
     padding: 10px;

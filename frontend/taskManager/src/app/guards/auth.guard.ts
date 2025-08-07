@@ -13,9 +13,19 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
+    console.log('AuthGuard: Verificando autenticación...');
+
+    const token = this.authService.getToken();
+    const user = this.authService.getCurrentUserValue();
+
+    console.log('AuthGuard: Token existe:', !!token);
+    console.log('AuthGuard: Usuario existe:', !!user);
+
+    if (token && user) {
+      console.log('AuthGuard: Acceso permitido para:', user.username);
       return true;
     } else {
+      console.log('AuthGuard: Redirigiendo al login');
       this.router.navigate(['/login']);
       return false;
     }

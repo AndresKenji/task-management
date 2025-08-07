@@ -13,19 +13,15 @@
     </div>
   </div>
 
-  <!-- Mensaje de error -->
   <div class="error-message" *ngIf="error">
     {{ error }}
   </div>
 
-  <!-- Indicador de carga -->
   <div class="loading" *ngIf="loading">
     Cargando estadísticas...
   </div>
 
-  <!-- Estadísticas -->
   <div class="stats-content" *ngIf="!loading && stats">
-    <!-- Tipo de estadísticas -->
     <div class="stats-scope">
       <div class="scope-badge" [class.global]="stats.scope === 'global'" [class.personal]="stats.scope === 'personal'">
         <span *ngIf="stats.scope === 'global'">
@@ -37,9 +33,7 @@
       </div>
     </div>
 
-    <!-- Cards de estadísticas -->
     <div class="stats-grid">
-      <!-- Total de tareas -->
       <div class="stats-card total">
         <div class="stats-icon"><i-feather name="list"></i-feather></div>
         <div class="stats-info">
@@ -48,7 +42,6 @@
         </div>
       </div>
 
-      <!-- Tareas completadas -->
       <div class="stats-card completed">
         <div class="stats-icon">
           <i-feather name="check-square"></i-feather>
@@ -59,7 +52,6 @@
         </div>
       </div>
 
-      <!-- Tareas pendientes -->
       <div class="stats-card pending">
         <div class="stats-icon">
           <i-feather name="clock"></i-feather>
@@ -70,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Porcentaje de completación -->
       <div class="stats-card completion">
         <div class="stats-icon">
           <i-feather name="trending-up"></i-feather>
@@ -82,7 +73,6 @@
       </div>
     </div>
 
-    <!-- Barra de progreso visual -->
     <div class="progress-section">
       <h4>Progreso de Completación</h4>
       <div class="progress-bar" *ngIf="stats">
@@ -101,7 +91,6 @@
       </div>
     </div>
 
-    <!-- Resumen textual -->
     <div class="stats-summary" *ngIf="stats">
       <div class="summary-card">
         <h4>Resumen</h4>
@@ -136,7 +125,6 @@
       </div>
     </div>
 
-    <!-- Información del usuario actual -->
     <div class="user-info" *ngIf="currentUser">
       <small>
         Estadísticas para: <strong>{{ currentUser.full_name || currentUser.username }}</strong>

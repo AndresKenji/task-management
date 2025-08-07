@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap, switchMap, map, catchError } from 'rxjs';
 import { User, LoginRequest, Token } from '../models/user.model';
 
 @Injectable({
@@ -10,18 +10,34 @@ export class AuthService {
   private readonly baseUrl = 'http://localhost:8000/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  private isInitializing = false;
 
-  constructor(private http: HttpClient) {
-    this.checkAuthToken();
-  }
+  constructor(
+    private http: HttpClient,
+  ) {}
 
   private checkAuthToken(): void {
+    if (this.isInitializing) return;
+
     const token = this.getToken();
     if (token) {
+      this.isInitializing = true;
+
       this.getCurrentUser().subscribe({
-        next: (user) => this.currentUserSubject.next(user),
-        error: () => this.logout()
+        next: (user) => {
+          this.currentUserSubject.next(user);
+          this.isInitializing = false;
+          console.log('Usuario autenticado:', user.username);
+        },
+        error: (err) => {
+          console.log('Token inválido o expirado, cerrando sesión:', err);
+          this.logout();
+          this.isInitializing = false;
+        }
       });
+    } else {
+
+      this.currentUserSubject.next(null);
     }
   }
 
@@ -32,32 +48,38 @@ export class AuthService {
 
     return this.http.post<Token>(`${this.baseUrl}/token`, formData).pipe(
       tap(response => {
+        console.log('Token recibido, guardando...');
         this.setToken(response.access_token);
-        // Obtener información del usuario después del login
-        this.getCurrentUser().subscribe({
-          next: (user) => this.currentUserSubject.next(user),
-          error: (err) => {
+      }),
+      switchMap(response => {
+
+        console.log('Obteniendo información del usuario...');
+        return this.getCurrentUser().pipe(
+          tap(user => {
+            console.log('Usuario obtenido exitosamente:', user.username);
+            this.currentUserSubject.next(user);
+          }),
+          map(() => response),
+          catchError(err => {
             console.error('Error getting user info:', err);
-            // Si falla obtener el usuario, limpiar el token
             this.logout();
-          }
-        });
+            throw err;
+          })
+        );
       })
     );
   }
 
-  // Método alternativo para login con cookies (opcional)
   loginWithCookie(credentials: LoginRequest): Observable<any> {
     const formData = new FormData();
     formData.append('username', credentials.username);
     formData.append('password', credentials.password);
 
     return this.http.post<any>(`${this.baseUrl}/token-cookie`, formData, {
-      withCredentials: true // Para incluir cookies en las requests
+      withCredentials: true
     }).pipe(
       tap(response => {
-        // Con cookies no necesitamos almacenar token en localStorage
-        // Obtener información del usuario después del login
+
         this.getCurrentUser().subscribe({
           next: (user) => this.currentUserSubject.next(user),
           error: (err) => {
@@ -112,9 +134,6 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  // Métodos adicionales basados en los endpoints de tu backend
-
-  // Actualizar perfil del usuario
   updateProfile(userData: { email?: string; full_name?: string }): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}/users/me`, userData, {
       headers: this.getAuthHeaders()
@@ -125,7 +144,6 @@ export class AuthService {
     );
   }
 
-  // Cambiar contraseña
   changePassword(passwordData: { current_password: string; new_password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/users/me/change-password`, passwordData, {
       headers: this.getAuthHeaders()
@@ -133,14 +151,12 @@ export class AuthService {
   }
 
 
-  // Listar todos los usuarios (solo admin)
   getAllUsers(skip: number = 0, limit: number = 100): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseUrl}/users?skip=${skip}&limit=${limit}`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Crear un usuario
   createUser(userData: {
     username: string;
     email: string;
@@ -152,28 +168,24 @@ export class AuthService {
     });
   }
 
-  // Habilitar/Deshabilitar usuario (solo admin)
   toggleUserStatus(userId: number): Observable<any> {
     return this.http.patch(`${this.baseUrl}/users/${userId}/toggle-status`, {}, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Otorgar/Quitar permisos de admin (solo admin)
   toggleAdminStatus(userId: number): Observable<any> {
     return this.http.patch(`${this.baseUrl}/users/${userId}/toggle-admin`, {}, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Eliminar usuario (solo admin)
   deleteUser(userId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/users/${userId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Verificar si el usuario actual es administrador
   isAdmin(): boolean {
     const currentUser = this.getCurrentUserValue();
     return currentUser ? currentUser.is_admin : false;
