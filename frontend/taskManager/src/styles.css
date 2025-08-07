@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+
 :root {
   /*
   --midnight-green: #219ebcff;
@@ -327,4 +327,12 @@ textarea.form-control {
 
 .close-btn:hover {
   color: #333;
+}
+
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
 }

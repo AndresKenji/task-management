@@ -14,8 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const authService = this.injector.get(AuthService);
-    const token = authService.getToken();
+    const token = localStorage.getItem('access_token');
 
     let authReq = req;
     if (token) {
@@ -30,7 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-
+          const authService = this.injector.get(AuthService);
           authService.logout();
           this.router.navigate(['/login']);
         }

@@ -21,32 +21,29 @@ import { EditTaskModalComponent } from './components/todo/edit-tasks-modal/edit-
 export function initializeAuth(authService: AuthService) {
   return (): Promise<void> => {
     return new Promise<void>((resolve) => {
-      const token = authService.getToken();
+      // console.log('APP_INITIALIZER: Iniciando verificación de autenticación...');
 
-      if (!token) {
-        console.log('APP_INITIALIZER: No hay token');
+      if (!authService.getToken()) {
+        // console.log('APP_INITIALIZER: No hay token, resolviendo');
         resolve();
         return;
       }
 
-      console.log('APP_INITIALIZER: Token encontrado, verificando...');
+      // console.log('APP_INITIALIZER: Token encontrado, esperando verificación...');
 
-      authService.getCurrentUser().subscribe({
-        next: (user) => {
-          console.log('APP_INITIALIZER: Usuario verificado exitosamente:', user.username);
-          resolve();
-        },
-        error: (err) => {
-          console.log('APP_INITIALIZER: Error al verificar token, limpiando sesión');
-          authService.logout();
+      const checkInterval = setInterval(() => {
+        if (authService.isInitializationCompleted()) {
+          // console.log('APP_INITIALIZER: Inicialización completada');
+          clearInterval(checkInterval);
           resolve();
         }
-      });
+      }, 100);
 
       setTimeout(() => {
-        console.log('APP_INITIALIZER: Timeout, continuando...');
+        // console.log('APP_INITIALIZER: Timeout, forzando resolución');
+        clearInterval(checkInterval);
         resolve();
-      }, 3000);
+      }, 5000);
     });
   };
 }

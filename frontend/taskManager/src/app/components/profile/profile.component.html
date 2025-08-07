@@ -6,7 +6,6 @@
     </button>
   </div>
 
-  <!-- Mensajes -->
   <div class="error-message" *ngIf="error">
     {{ error }}
   </div>
@@ -15,7 +14,6 @@
     {{ success }}
   </div>
 
-  <!-- Información del usuario -->
   <div class="profile-card" *ngIf="currentUser">
     <div class="user-info">
       <h3>Información Personal</h3>
@@ -74,7 +72,6 @@
       </div>
     </div>
 
-    <!-- Botones de acción -->
     <div class="action-buttons">
       <button
         *ngIf="!editMode"

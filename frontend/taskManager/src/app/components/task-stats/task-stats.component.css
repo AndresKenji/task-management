@@ -5,18 +5,18 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.stats-header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--prussian-blue) 0%, var(--midnight-green) 100%);
   color: white;
   border-radius: 8px;
 }
 
-.stats-header h2 {
+.header h2 {
   margin: 0;
   font-size: 1.8rem;
 }
@@ -24,49 +24,6 @@
 .header-actions {
   display: flex;
   gap: 0.5rem;
-}
-
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  border: 1px solid #f5c6cb;
-}
-
-.loading {
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-outline {
-  background-color: transparent;
-  color: white;
-  border: 1px solid white;
-}
-
-.btn-outline:hover {
-  background-color: white;
-  color: #333;
 }
 
 .stats-scope {
@@ -83,8 +40,8 @@
 }
 
 .scope-badge.global {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--auburn);
+  color: var(--pearl);
 }
 
 .scope-badge.personal {
@@ -189,7 +146,7 @@
 }
 
 .progress-fill.low {
-  background: linear-gradient(45deg, #dc3545, #e83e8c);
+  background: linear-gradient(45deg, var(--auburn), #e83e8c);
 }
 
 .progress-labels {
@@ -197,7 +154,7 @@
   justify-content: space-between;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--rich-black);
 }
 
 .stats-summary {
@@ -214,36 +171,36 @@
 .summary-card h4 {
   margin-top: 0;
   margin-bottom: 1rem;
-  color: #333;
+  color: var(--rich-black);
 }
 
 .summary-card p {
   margin-bottom: 1rem;
-  color: #555;
+  color: var(--rich-black);
   line-height: 1.6;
 }
 
 .positive {
-  color: #28a745;
+  color: var(--dark-cyan);
   font-weight: 600;
 }
 
 .neutral {
-  color: #17a2b8;
+  color: var(--midnight-green);
   font-weight: 600;
 }
 
 .encouraging {
-  color: #fd7e14;
+  color: var(--alloy-orange);
   font-weight: 600;
 }
 
 .user-info {
   text-align: center;
   padding: 1rem;
-  background-color: #f8f9fa;
+  background-color: var(--pearl);
   border-radius: 8px;
-  color: #666;
+  color: var(--rich-black);
 }
 
 @media (max-width: 768px) {

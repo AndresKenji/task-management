@@ -11,10 +11,34 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private isInitializing = false;
+  private initializationCompleted = false;
 
   constructor(
     private http: HttpClient,
-  ) {}
+  ) {
+    this.initializeAuthState();
+  }
+
+  public isInitializationCompleted(): boolean {
+    return this.initializationCompleted;
+  }
+
+  private initializeAuthState(): void {
+    console.log('AuthService: Iniciando verificación de estado...');
+    console.log('AuthService: localStorage contenido:', localStorage.getItem('access_token'));
+
+    const token = this.getToken();
+    console.log('AuthService: Token obtenido:', token ? 'Token presente' : 'No hay token');
+
+    if (token) {
+      console.log('AuthService: Token encontrado, verificando usuario...');
+      this.checkAuthToken();
+    } else {
+      console.log('AuthService: No hay token almacenado');
+      this.currentUserSubject.next(null);
+      this.initializationCompleted = true;
+    }
+  }
 
   private checkAuthToken(): void {
     if (this.isInitializing) return;
@@ -22,22 +46,26 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       this.isInitializing = true;
+      console.log('AuthService: Verificando token con el servidor...');
 
       this.getCurrentUser().subscribe({
         next: (user) => {
+          console.log('AuthService: Usuario autenticado:', user.username);
           this.currentUserSubject.next(user);
           this.isInitializing = false;
-          console.log('Usuario autenticado:', user.username);
+          this.initializationCompleted = true;
         },
         error: (err) => {
-          console.log('Token inválido o expirado, cerrando sesión:', err);
+          console.log('AuthService: Token inválido o expirado, cerrando sesión:', err);
           this.logout();
           this.isInitializing = false;
+          this.initializationCompleted = true;
         }
       });
     } else {
-
+      console.log('AuthService: No hay token, estableciendo usuario como null');
       this.currentUserSubject.next(null);
+      this.initializationCompleted = true;
     }
   }
 
@@ -92,8 +120,17 @@ export class AuthService {
   }
 
   logout(): void {
+    console.log('logout() llamado');
     localStorage.removeItem('access_token');
+    console.log('Token removido del localStorage');
     this.currentUserSubject.next(null);
+
+    // Solo hacer la petición de logout si hay headers válidos
+    const token = localStorage.getItem('access_token'); // Verificar si queda algún token
+    if (!token) {
+      console.log('No hay token para logout en servidor, solo limpieza local');
+      return;
+    }
 
     this.http.post(`${this.baseUrl}/logout`, {}, {
       withCredentials: true,
@@ -115,11 +152,16 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
+    // Reducimos los logs para evitar spam
+    // console.log('getToken() llamado, resultado:', token ? 'Token encontrado' : 'No hay token');
+    return token;
   }
 
   private setToken(token: string): void {
+    console.log('setToken() llamado, guardando token en localStorage');
     localStorage.setItem('access_token', token);
+    console.log('Token guardado exitosamente');
   }
 
   getAuthHeaders(): HttpHeaders {
@@ -189,5 +231,15 @@ export class AuthService {
   isAdmin(): boolean {
     const currentUser = this.getCurrentUserValue();
     return currentUser ? currentUser.is_admin : false;
+  }
+
+  // Método para debug - verificar estado completo
+  public debugAuthState(): void {
+    console.log('=== DEBUG AUTH STATE ===');
+    console.log('Token en localStorage:', localStorage.getItem('access_token'));
+    console.log('Usuario actual:', this.getCurrentUserValue());
+    console.log('Inicialización completada:', this.initializationCompleted);
+    console.log('Está inicializando:', this.isInitializing);
+    console.log('========================');
   }
 }

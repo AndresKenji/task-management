@@ -16,7 +16,6 @@ export class NavbarComponent {
     private authService: AuthService
   ) {}
 
-  // Métodos de navegación - ahora conectados con las rutas reales
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
   }
@@ -25,10 +24,8 @@ export class NavbarComponent {
     this.router.navigate(['/stats']);
   }
 
-  navigateToSettings(): void {
-    // Aquí navegarías a configuraciones - puedes crear un componente similar
-    console.log('Navegar a configuraciones - crear componente de configuraciones');
-  }
+  // navigateToSettings(): void {
+  // }
 
   logout(): void {
     this.authService.logout();

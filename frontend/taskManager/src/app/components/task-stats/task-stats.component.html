@@ -1,17 +1,17 @@
-<div class="stats-container">
-  <div class="stats-header">
-    <h2>
-      <i-feather name="bar-chart"></i-feather> Estadísticas de Tareas
-    </h2>
-    <div class="header-actions">
-      <button class="btn btn-secondary" (click)="refreshStats()">
-        <i-feather name="refresh-cw"></i-feather> Actualizar
-      </button>
-      <button class="btn btn-outline" (click)="goBack()">
-        ← Volver a Tareas
-      </button>
-    </div>
+<div class="header">
+  <h2>
+    <i-feather name="bar-chart"></i-feather> Estadísticas de Tareas
+  </h2>
+  <div class="header-actions">
+    <button class="btn btn-secondary" (click)="refreshStats()">
+      <i-feather name="refresh-cw"></i-feather> Actualizar
+    </button>
+    <button class="btn btn-outline" (click)="goBack()">
+      ← Volver a Tareas
+    </button>
   </div>
+</div>
+<div class="stats-container">
 
   <div class="error-message" *ngIf="error">
     {{ error }}

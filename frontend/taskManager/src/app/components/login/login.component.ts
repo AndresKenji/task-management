@@ -44,6 +44,6 @@ export class LoginComponent {
   }
 
   forgotPassword(): void {
-    console.log('Recuperar contraseña - cambiar por tu lógica');
+
   }
 }
