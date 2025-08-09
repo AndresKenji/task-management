@@ -4,6 +4,7 @@
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-height: 80vh;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Barra de acciones */
@@ -17,30 +18,35 @@
 .tasks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 0.5rem;
+  grid-auto-rows: min-content;
+  gap: 1rem;
+  align-items: start;
 }
+
 @media (max-width: 768px) {
   .tasks-grid {
     grid-template-columns: 1fr;
     gap: 5rem;
     column-gap: normal;
   }
+
   .task-card {
     min-width: 0;
     padding: 1rem;
   }
 }
+
 /* Cards de tareas */
 .task-card {
   background: var(--pearl);
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
+  box-shadow: 0 2px 4px #0000001a;
+  transition: all .3s;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  margin-bottom: 1rem;
 }
 
 .task-card:hover {

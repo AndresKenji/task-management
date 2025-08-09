@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class TaskService {
   private readonly baseUrl = 'http://localhost:8000/api/task';
+  // private readonly baseUrl = 'http://api:8000/api/task';
 
   constructor(
     private http: HttpClient,

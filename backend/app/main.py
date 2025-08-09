@@ -19,7 +19,8 @@ middleware:list[Middleware] = [
         CORSMiddleware,
         allow_origins=["http://localhost:4200",
                        "http://api:8000",
-                       "http://localhost:8000"],
+                       "http://localhost:8000",
+                       "http://frontend:80"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"]

@@ -8,6 +8,7 @@ import { User, LoginRequest, Token } from '../models/user.model';
 })
 export class AuthService {
   private readonly baseUrl = 'http://localhost:8000/api/auth';
+  // private readonly baseUrl = 'http://api:8000/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private isInitializing = false;
