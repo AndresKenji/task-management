@@ -1,7 +1,7 @@
 # GitHub Pages Configuration
 title: Task Management App
 description: Aplicación completa de gestión de tareas construida con FastAPI, PostgreSQL y Angular
-author: Andrés Kenji
+author: Oscar Andrés Rodríguez Fernández
 github_username: AndresKenji
 
 # Build settings

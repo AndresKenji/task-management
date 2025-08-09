@@ -2,7 +2,7 @@
 
 Una aplicación completa de gestión de tareas construida con FastAPI, PostgreSQL y Angular.
 
-🌐 **[Ver página del proyecto](https://andreskenji.github.io/task-management/)** | 📖 **[Documentación de la API](http://localhost:8000/docs)** | 🚀 **[Demo en vivo](https://andreskenji.github.io/task-management/)**
+🌐 **[Ver página del proyecto](https://andreskenji.github.io/task-management/)**
 
 ## 📋 Descripción
 
@@ -10,11 +10,11 @@ Task Management App es una aplicación web moderna que permite a los usuarios ge
 
 ## 🏗️ Arquitectura
 
-- **Backend**: FastAPI (Python)
-- **Frontend**: Angular 15
-- **Base de datos**: PostgreSQL 16
-- **Containerización**: Docker & Docker Compose
-- **Autenticación**: JWT Tokens
+- **Backend**: ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+- **Frontend**: ![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white) ![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
+- **Base de datos**: ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+- **Containerización**: ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+- **Autenticación**: ![JWT Tokens](https://img.shields.io/badge/JWT-black?style=plastic&logo=JSON%20web%20tokens)
 
 ## 🚀 Características
 
@@ -51,26 +51,26 @@ Task Management App es una aplicación web moderna que permite a los usuarios ge
 ## 🗂️ Estructura del Proyecto
 
 ```
-task-management/
-├── backend/              # Backend FastAPI
-│   ├── app/
-│   │   ├── auth/        # Módulos de autenticación
-│   │   ├── database/    # Configuración de base de datos
-│   │   ├── task/        # Módulos de tareas
-│   │   └── main.py      # Punto de entrada de la API
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/            # Frontend Angular
-│   ├── taskManager/
-│   │   ├── src/
-│   │   ├── angular.json
-│   │   └── package.json
-│   ├── Dockerfile
-│   └── nginx.conf
-├── docs/                # Documentación
-│   └── img/            # Capturas de pantalla
-├── docker-compose.yml
-└── README.md
+📁task-management/
+├── 📁 backend/
+│   ├── 📁 app/
+│   │   ├── 📁 auth/
+│   │   ├── 📁 database/
+│   │   ├── 📁 task/
+│   │   └── 🐍 main.py
+│   ├── 🐋 Dockerfile
+│   └── 🗎 requirements.txt
+├── 📁 frontend/
+│   ├── 📁 taskManager/
+│   │   ├── 📁 src/
+│   │   ├── ⚙ angular.json
+│   │   └── ⚙ package.json
+│   ├── 🐋 Dockerfile
+│   └── ⚙ nginx.conf
+├── 📁 docs/
+│   └── 📁 img/
+├── 🐋 docker-compose.yml
+└── 🗎 README.md
 ```
 
 ## 📱 Capturas de Pantalla
