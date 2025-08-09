@@ -2,6 +2,8 @@
 
 Una aplicación completa de gestión de tareas construida con FastAPI, PostgreSQL y Angular.
 
+🌐 **[Ver página del proyecto](https://andreskenji.github.io/task-management/)** | 📖 **[Documentación de la API](http://localhost:8000/docs)** | 🚀 **[Demo en vivo](https://andreskenji.github.io/task-management/)**
+
 ## 📋 Descripción
 
 Task Management App es una aplicación web moderna que permite a los usuarios gestionar sus tareas de manera eficiente. La aplicación cuenta con un sistema de autenticación básica y proporciona una interfaz intuitiva para crear, editar, eliminar y visualizar tareas.

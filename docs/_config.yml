@@ -1,0 +1,28 @@
+# GitHub Pages Configuration
+title: Task Management App
+description: Aplicación completa de gestión de tareas construida con FastAPI, PostgreSQL y Angular
+author: Andrés Kenji
+github_username: AndresKenji
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# GitHub Pages specific settings
+repository: AndresKenji/task-management
+github: [metadata]
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - backend/
+  - frontend/
+  - docker-compose.yml
+  - .env
+  - env/
+
+# Include files
+include:
+  - img/
