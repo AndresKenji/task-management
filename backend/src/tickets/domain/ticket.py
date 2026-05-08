@@ -5,7 +5,7 @@ from uuid import UUID
 
 from shared.domain import AggregateRoot, new_id
 
-from .events import TicketCreated
+from .events import TicketCreated, TicketAssigned, TicketClosed
 from .value_objects import TicketStatus
 
 
@@ -76,16 +76,24 @@ class Ticket(AggregateRoot):
         return self._created_at
 
     def assign(self, assignee_id: UUID) -> None:
-        # TODO(milestone-2): implement assignment. Rules:
-        #   - status CLOSED: raise ValueError("cannot assign a closed ticket").
-        #   - status OPEN: transition to IN_PROGRESS.
-        #   - status IN_PROGRESS: leave status as-is (reassign allowed).
-        #   - Update self._assignee_id and record a TicketAssigned event
-        #     (import from .events) via self._record(...).
-        raise NotImplementedError
+        if self.status == TicketStatus.CLOSED:
+            raise ValueError("cannot assign a closed ticket")
+        if self.status == TicketStatus.OPEN:
+            self._status = TicketStatus.IN_PROGRESS
+        self._assignee_id = assignee_id
+        self._record(
+            TicketAssigned(
+                ticket_id=self.id,
+                assignee_id=assignee_id,
+            )
+        )
 
     def close(self) -> None:
-        # TODO(milestone-2): implement closing. Rules:
-        #   - status CLOSED: raise ValueError("ticket is already closed").
-        #   - otherwise: transition to CLOSED and record a TicketClosed event.
-        raise NotImplementedError
+        if self.status == TicketStatus.CLOSED:
+            raise ValueError("ticket is already closed")
+        self._status = TicketStatus.CLOSED
+        self._record(
+            TicketClosed(
+                ticket_id=self.id,
+            )
+        )

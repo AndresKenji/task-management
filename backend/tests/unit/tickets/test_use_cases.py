@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-import pytest
 
 from tickets.application import (
     AssignTicket,
@@ -33,11 +32,7 @@ class TestCreateTicket:
 
 
 class TestAssignTicket:
-    @pytest.mark.skip(reason="TODO milestone-2: implement AssignTicket.execute() then enable")
     def test_assignment_is_persisted(self) -> None:
-        # Hint: build repo + use cases, create a ticket, then call AssignTicket
-        # with an AssignTicketCommand. After: repo.get(ticket_id) should reflect
-        # the new assignee_id and IN_PROGRESS status.
         repo = InMemoryTicketRepository()
         create = CreateTicket(repo)
         assign = AssignTicket(repo)
