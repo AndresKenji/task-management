@@ -1,10 +1,14 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
+from tickets.interface import router as tickets_router
+
 app = FastAPI(
     title="Task Management API",
     version="0.1.0",
 )
+
+app.include_router(tickets_router)
 
 
 @app.get("/health")
