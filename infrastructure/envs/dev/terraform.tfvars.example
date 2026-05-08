@@ -1,0 +1,3 @@
+region      = "us-east-1"
+project     = "task-mgmt"
+environment = "dev"

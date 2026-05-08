@@ -1,23 +1,13 @@
-FROM python:3.13.5-alpine3.21
+FROM public.ecr.aws/lambda/python:3.13
 
-ENV TZ=America/Bogota
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-RUN apk update && \
-    apk add --no-cache \
-        build-base \
-        linux-headers \
-        libffi-dev \
-        musl-dev \
-        postgresql-dev \
-        python3-dev \
-        py3-pip \
-        tzdata
+COPY pyproject.toml uv.lock /tmp/build/
+RUN cd /tmp/build && \
+    uv export --frozen --no-dev --no-emit-project --no-hashes -o requirements.txt && \
+    pip install --no-cache-dir --target ${LAMBDA_TASK_ROOT} -r requirements.txt && \
+    rm -rf /tmp/build
 
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-COPY ./app /app
-RUN rm -f /app/.env
-WORKDIR /app
-EXPOSE 8000
+COPY src/ ${LAMBDA_TASK_ROOT}/src/
 
-CMD ["python3", "/app/main.py"]
+CMD ["src.main.handler"]

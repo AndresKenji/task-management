@@ -1,0 +1,44 @@
+[project]
+name = "task-management-api"
+version = "0.1.0"
+description = "Task management API (FastAPI + DDD) for the task-management portfolio project"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi==0.116.1",
+    "mangum==0.19.0",
+    "uvicorn==0.35.0",
+    "pydantic==2.11.7",
+    "email-validator==2.2.0",
+    "sqlalchemy==2.0.42",
+    "asyncpg==0.30.0",
+    "psycopg2-binary==2.9.10",
+    "pyjwt==2.10.1",
+    "boto3==1.35.36",
+    "python-dotenv==1.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "black==24.10.0",
+    "flake8==7.1.1",
+    "pytest==8.3.3",
+    "pytest-asyncio==0.24.0",
+    "httpx==0.27.2",
+]
+
+[tool.uv]
+package = false
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "integration: tests that require external services (database, etc.)",
+]
