@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
+from identity.interface import router as identity_router
 from tickets.interface import router as tickets_router
 
 app = FastAPI(
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(tickets_router)
+app.include_router(identity_router)
 
 
 @app.get("/health")
