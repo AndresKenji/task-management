@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-import pytest
-
 from identity.application import GetOrCreateProfile, GetOrCreateProfileCommand
 from identity.infrastructure import InMemoryUserRepository
+from identity.domain import User
 
 
 class TestGetOrCreateProfile:
-    @pytest.mark.skip(reason="TODO milestone-4: implement GetOrCreateProfile.execute then enable")
     async def test_creates_user_when_missing(self) -> None:
         repo = InMemoryUserRepository()
         use_case = GetOrCreateProfile(repo)
@@ -30,11 +28,18 @@ class TestGetOrCreateProfile:
         from_repo = await repo.get(sub)
         assert from_repo.id == sub
 
-    @pytest.mark.skip(reason="TODO milestone-4: write the existing-user path test")
     async def test_returns_existing_user_when_present(self) -> None:
-        # Hint:
-        #   1. Build the repo and pre-populate it with a User via User.create(...) + repo.add(...).
-        #   2. Call use_case.execute with the same sub but a different email/full_name.
-        #   3. Assert the returned user has the ORIGINAL email/full_name (not the input ones).
-        #      That confirms we hit the existing-user branch rather than overwriting.
-        ...
+        repo = InMemoryUserRepository()
+        use_case = GetOrCreateProfile(repo)
+        sub = uuid4()
+        existing_user = User.create(sub=sub, email="kenji@example.com", full_name="Kenji")
+        await repo.add(existing_user)
+        result = await use_case.execute(
+            GetOrCreateProfileCommand(
+                sub=sub,
+                email="impostor@example.com",
+                full_name="Impostor",
+            )
+        )
+        assert result.email == "kenji@example.com"
+        assert result.full_name == "Kenji"

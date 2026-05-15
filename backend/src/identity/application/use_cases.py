@@ -11,12 +11,10 @@ class GetOrCreateProfile:
         self._repo = repo
 
     async def execute(self, cmd: GetOrCreateProfileCommand) -> User:
-        # TODO(milestone-4): implement the find-or-create pattern.
-        # Steps:
-        #   1. try: existing = await self._repo.get(cmd.sub); return existing
-        #   2. except KeyError:
-        #        user = User.create(sub=cmd.sub, email=cmd.email, full_name=cmd.full_name)
-        #        await self._repo.add(user)
-        #        return user
-        # No update path for now; we just return whatever is in the repo on hit.
-        raise NotImplementedError
+        try:
+            existing = await self._repo.get(cmd.sub)
+            return existing
+        except KeyError:
+            user = User.create(sub=cmd.sub, email=cmd.email, full_name=cmd.full_name)
+            await self._repo.add(user)
+            return user
